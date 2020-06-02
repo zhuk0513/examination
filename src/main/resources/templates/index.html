@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>首页</title>
+    <base th:href="@{/}">
+
+    <link rel="stylesheet" href="scripts/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="stylesheet/css/main.css">
+
+    <script src="scripts/jquery.min.js"></script>
+    <script src="scripts/vue/vue.js"></script>
+    <script src="scripts/element-ui/lib/index.js"></script>
+    <script src="scripts/ajax.js"></script>
+    <script src="scripts/myUtils.js"></script>
+
+    <style>
+        .el-header, .el-footer {
+            background-color: #B3C0D1;
+            color: #333;
+            text-align: center;
+            line-height: 60px;
+        }
+
+        .el-aside {
+            background-color: #D3DCE6;
+            color: #333;
+            text-align: center;
+            line-height: 950px;
+        }
+
+        .el-main {
+            background-color: #E9EEF3;
+            color: #333;
+            text-align: center;
+            line-height: 160px;
+        }
+
+        body > .el-container {
+            margin-bottom: 40px;
+        }
+
+        .el-container:nth-child(5) .el-aside,
+        .el-container:nth-child(6) .el-aside {
+            line-height: 260px;
+        }
+    </style>
+</head>
+<body>
+<div id="main" v-cloak  >
+    <el-container>
+        <el-aside width="200px">
+            <el-row class="tac">
+                    <el-menu
+                            default-active="2"
+                            class="el-menu-vertical-demo"
+
+                    >
+                        <el-submenu index="1">
+                            <template slot="title">
+                                <i class="el-icon-menu"></i>
+                                <span>信息管理</span>
+                            </template>
+                            <el-menu-item-group>
+                                <el-menu-item  v-for="(item,i) in paths" :key="item.index" :index="item.index" @click="menuClick(item)">{{item.name}}</el-menu-item>
+                            </el-menu-item-group>
+                        </el-submenu>
+                        <el-menu-item index="2">
+                            <i class="el-icon-location"></i>
+                            <span slot="title">数据分析</span>
+                        </el-menu-item>
+                    </el-menu>
+                </el-row>
+        </el-aside>
+        <el-container>
+            <!--<el-header>Header</el-header>-->
+            <el-main>
+                <iframe :src="srcUrl"   frameborder="0" scrolling="auto" style="width: 100%;height: 800px"></iframe>
+            </el-main>
+        </el-container>
+    </el-container>
+</div>
+</body>
+<script th:inline="javascript">
+    // let path  = [[@{/}]];
+    // let path = /*[[@{/}]]*/'';
+    let path=[[${#httpServletRequest.getContextPath()}]];
+</script>
+<script>
+    let paths=[
+        {index:getUUID(),name:'人员管理',url:'page/test/personManage'},
+        {index:getUUID(),name:'任务管理',url:'page/test/taskManage'}
+        ];
+
+    let testVm=new Vue({
+        el:'#main',
+        data:{
+            person:[],
+            srcUrl:'',
+            paths:paths
+        },
+        mounted(){
+          this.$nextTick(()=>{
+              let url="page/test/personManage";
+              let params={name:'张三'};
+              this.goToUrl(url,params,'_self');
+            })
+        },
+        methods:{
+            goToUrl(url,params,target){
+                if(target=='_blank'){
+                    goToUrl(url,params,target);
+                }else{
+                    testVm.srcUrl=path+'/goToUrl?url='+url+'&params='+encodeURI(JSON.stringify(params));
+                }
+            },
+            handleSelect(index,path){
+                console.log(index)
+            },
+            menuClick(item){
+                this.goToUrl(item.url, {},'_self');
+            }
+        }
+    })
+</script>
+</html>

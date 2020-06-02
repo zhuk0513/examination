@@ -1,0 +1,16 @@
+.foot{
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-size: 14px;
+    text-align: center;
+    color:#409EFF;
+}
+
+[v-cloak]{
+    display:none;
+}
+
+.el-tabs__nav .el-tabs__item:nth-child(1) span{
+    display: none;
+}
