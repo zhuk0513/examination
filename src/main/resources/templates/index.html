@@ -88,8 +88,8 @@
 </script>
 <script>
     let paths=[
-        {index:getUUID(),name:'人员管理',url:'page/test/personManage'},
-        {index:getUUID(),name:'任务管理',url:'page/test/taskManage'}
+        {index:getUUID(),name:'任务管理',url:'page/test/taskManage'},
+        {index:getUUID(),name:'人员管理',url:'page/test/personManage'}
         ];
 
     let testVm=new Vue({
@@ -101,7 +101,7 @@
         },
         mounted(){
           this.$nextTick(()=>{
-              let url="page/test/personManage";
+              let url="page/test/taskManage";
               let params={name:'张三'};
               this.goToUrl(url,params,'_self');
             })

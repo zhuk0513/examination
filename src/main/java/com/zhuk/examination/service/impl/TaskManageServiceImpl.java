@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zhuk.examination.common.utils.ResultJson;
 import com.zhuk.examination.model.entity.TaskManage;
 import com.zhuk.examination.dao.TaskManageMapper;
 import com.zhuk.examination.service.TaskManageService;
@@ -32,8 +33,8 @@ public class TaskManageServiceImpl extends ServiceImpl<TaskManageMapper, TaskMan
     private TaskManageMapper taskManageMapper;
 
     @Override
-    public JSONObject findPageTaskManage(String name,String type,String status,String createTime, int pageSize, int curPage) {
-        JSONObject result = new JSONObject();
+    public ResultJson findPageTaskManage(String name,String type,String status,String createTime, int pageSize, int curPage) {
+        ResultJson result=new ResultJson();
         try {
 
             QueryWrapper<TaskManage> wrapper = new QueryWrapper();
@@ -56,78 +57,78 @@ public class TaskManageServiceImpl extends ServiceImpl<TaskManageMapper, TaskMan
             }
 
             wrapper.orderByDesc("create_time");
-            IPage<TaskManage> pages = taskManageMapper.selectPage(new Page<>(curPage, curPage), wrapper);
+            IPage<TaskManage> pages = taskManageMapper.selectPage(new Page<>(curPage, pageSize), wrapper);
 
-            result.put("code", 1);
-            result.put("result", pages.getRecords());
-            result.put("totalSize", this.count(wrapper));
+            result.setCode(ResultJson.Code.SUCCESS_CODE.toString());
+            result.setResult(pages.getRecords());
+            result.setTotalSize(pages.getTotal());
         } catch (Exception e) {
-            result.put("code", 0);
-            result.put("msg", "出错了请联系管理员");
+            result.setCode(ResultJson.Code.FAIL_CODE.toString());
+            result.setMsg(ResultJson.Msg.FAIL_MSG.toString());
         }
 
         return result;
     }
 
     @Override
-    public JSONObject saveTaskManage(String params, String userId) {
-        JSONObject result = new JSONObject();
+    public ResultJson saveTaskManage(String params, String userId) {
+        ResultJson result=new ResultJson();
         try{
             TaskManage taskManage =JSONObject.parseObject(params, TaskManage.class);
             taskManage.setCreateTime(new Date());
             taskManageMapper.insert(taskManage);
 
-            result.put("code", 1);
-            result.put("msg", "保存成功");
+            result.setCode(ResultJson.Code.SUCCESS_CODE.toString());
+            result.setMsg(ResultJson.Msg.SUCCESS_MSG.toString());
         } catch (Exception e) {
-            result.put("code", 0);
-            result.put("msg", "出错了请联系管理员");
+            result.setCode(ResultJson.Code.FAIL_CODE.toString());
+            result.setMsg(ResultJson.Msg.FAIL_MSG.toString());
             log.error("新建告警策略失败" + e.getMessage());
         }
         return result;
     }
 
     @Override
-    public JSONObject updateTaskManageById(String params, String userId) {
-        JSONObject result = new JSONObject();
+    public ResultJson updateTaskManageById(String params, String userId) {
+        ResultJson result = new ResultJson();
         try{
             TaskManage taskManage =JSONObject.parseObject(params, TaskManage.class);
             taskManageMapper.updateById(taskManage);
 
-            result.put("code", 1);
-            result.put("msg", "修改成功");
+            result.setCode(ResultJson.Code.SUCCESS_CODE.toString());
+            result.setMsg(ResultJson.Msg.SUCCESS_MSG.toString());
         } catch (Exception e) {
-            result.put("code", 0);
-            result.put("msg", "出错了请联系管理员");
+            result.setCode(ResultJson.Code.FAIL_CODE.toString());
+            result.setMsg(ResultJson.Msg.FAIL_MSG.toString());
             log.error("修改告警策略失败" + e.getMessage());
         }
         return result;
     }
 
     @Override
-    public JSONObject getOneTaskManage(String id) {
-        JSONObject result = new JSONObject();
+    public ResultJson getOneTaskManage(String id) {
+        ResultJson result = new ResultJson();
         try{
-            result.put("code", 1);
-            result.put("result", taskManageMapper.selectById(id));
+            result.setCode(ResultJson.Code.SUCCESS_CODE.toString());
+            result.setResult(taskManageMapper.selectById(id));
         } catch (Exception e) {
-            result.put("code", 0);
-            result.put("msg", "出错了请联系管理员");
+            result.setCode(ResultJson.Code.FAIL_CODE.toString());
+            result.setMsg(ResultJson.Msg.FAIL_MSG.toString());
             log.error("修改告警策略失败" + e.getMessage());
         }
         return result;
     }
 
     @Override
-    public JSONObject deleteTaskManage(String[] ids, String userId) {
-        JSONObject result = new JSONObject();
+    public ResultJson deleteTaskManage(String[] ids, String userId) {
+        ResultJson result = new ResultJson();
         try{
             taskManageMapper.deleteBatchIds(Arrays.asList(ids));
-            result.put("code", 1);
-            result.put("msg", "删除成功");
+            result.setCode(ResultJson.Code.SUCCESS_CODE.toString());
+            result.setMsg(ResultJson.Msg.SUCCESS_MSG.toString());
         } catch (Exception e) {
-            result.put("code", 0);
-            result.put("msg", "出错了请联系管理员");
+            result.setCode(ResultJson.Code.FAIL_CODE.toString());
+            result.setMsg(ResultJson.Msg.FAIL_MSG.toString());
             log.error("修改告警策略失败" + e.getMessage());
         }
         return result;

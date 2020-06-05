@@ -1,6 +1,7 @@
 package com.zhuk.examination.common.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.Data;
 
 import java.io.Serializable;
 
@@ -9,6 +10,7 @@ import java.io.Serializable;
  * @description: 返回类型
  * @date 2020-04-27
  */
+@Data
 public class ResultJson<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -27,8 +29,11 @@ public class ResultJson<T> implements Serializable {
     /**
      * 分页返回总数
      */
-    private int totalSzie;
+    private long totalSize;
 
+    public ResultJson() {
+
+    }
     /**
      * 自定义返回参数
      * @param code
@@ -46,11 +51,11 @@ public class ResultJson<T> implements Serializable {
         this.result = result;
     }
 
-    public ResultJson(Code code,Msg msg,T result,int totalSzie) {
+    public ResultJson(Code code,Msg msg,T result,long totalSzie) {
         this.code = code.toString();
         this.msg = msg.toString();
         this.result = result;
-        this.totalSzie=totalSzie;
+        this.totalSize=totalSzie;
     }
 
     public String toJSONString() {

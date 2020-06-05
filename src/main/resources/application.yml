@@ -49,8 +49,3 @@ mybatis-plus:
   #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   #扫描通用枚举
   typeEnumsPackage: com.zhuk.examination.model.enums
-
-
-es:
-  uris: 10.168.7.113:9201,10.168.7.113:9202
-  scheme: http

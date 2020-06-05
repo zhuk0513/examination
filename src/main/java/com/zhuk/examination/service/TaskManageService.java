@@ -2,6 +2,7 @@ package com.zhuk.examination.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zhuk.examination.common.utils.ResultJson;
 import com.zhuk.examination.model.entity.TaskManage;
 
 /**
@@ -20,28 +21,28 @@ public interface TaskManageService extends IService<TaskManage> {
      * @param curPage
      * @return
      */
-    JSONObject findPageTaskManage(String name,String type,String status,String createTime, int pageSize, int curPage);
+    ResultJson findPageTaskManage(String name, String type, String status, String createTime, int pageSize, int curPage);
 
     /**
      * 批量保存
      * @param params
      * @return
      */
-    JSONObject saveTaskManage(String params,String userId);
+    ResultJson saveTaskManage(String params,String userId);
 
     /**
      * 根据id修改
      * @param params
      * @return
      */
-    JSONObject updateTaskManageById(String params,String userId);
+    ResultJson updateTaskManageById(String params,String userId);
 
     /**
      * 根绝id查询
      * @param id
      * @return
      */
-    JSONObject getOneTaskManage(String id);
+    ResultJson getOneTaskManage(String id);
 
     /**
      * 根据id批量删除
@@ -49,7 +50,7 @@ public interface TaskManageService extends IService<TaskManage> {
      * @param userId
      * @return
      */
-    JSONObject deleteTaskManage(String[] ids, String userId);
+    ResultJson deleteTaskManage(String[] ids, String userId);
 
 
 }

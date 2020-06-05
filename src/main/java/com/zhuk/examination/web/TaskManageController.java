@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zhuk.examination.common.utils.ResultJson;
 import com.zhuk.examination.model.entity.TaskManage;
 import com.zhuk.examination.service.TaskManageService;
 import com.zhuk.examination.common.utils.GkStringUtils;
@@ -36,7 +37,7 @@ public class TaskManageController {
      * @return
      */
     @GetMapping("/findPageTaskManage")
-    public JSONObject findPageAlarmStrtegy(String name,String type,String status,String createTime, int pageSize, int curPage){
+    public ResultJson findPageAlarmStrtegy(String name, String type, String status, String createTime, int pageSize, int curPage){
         return taskManageService.findPageTaskManage(name,type,status,createTime,pageSize,curPage);
     }
 
@@ -46,7 +47,7 @@ public class TaskManageController {
      * @return
      */
     @PostMapping("/saveTaskManage")
-    public JSONObject saveAlarmStrtegy(String params,String userId){
+    public ResultJson saveAlarmStrtegy(String params,String userId){
         return taskManageService.saveTaskManage(params,userId);
     }
 
@@ -56,7 +57,7 @@ public class TaskManageController {
      * @return
      */
     @PutMapping("/updateTaskManageById")
-    public JSONObject updateAlarmStrtegyById(String params,String userId){
+    public ResultJson updateAlarmStrtegyById(String params,String userId){
         return taskManageService.updateTaskManageById(params,userId);
     }
 
@@ -66,7 +67,7 @@ public class TaskManageController {
      * @return
      */
     @GetMapping("/getOneTaskManage")
-    public JSONObject getOneAlarmStrtegy(String id){
+    public ResultJson getOneAlarmStrtegy(String id){
 
         return taskManageService.getOneTaskManage(id);
     }
@@ -78,7 +79,7 @@ public class TaskManageController {
      * @return
      */
     @DeleteMapping("/deleteTaskManage")
-    public JSONObject deleteTaskManage(String ids, String userId){
+    public ResultJson deleteTaskManage(String ids, String userId){
         return taskManageService.deleteTaskManage(ids.split(","),userId);
     }
 
