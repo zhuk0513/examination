@@ -14,3 +14,49 @@
 .el-tabs__nav .el-tabs__item:nth-child(1) span{
     display: none;
 }
+
+/* 修改头部背景和字体颜色 */
+.el-table th{background: #344067;color: #fff;font-weight: 500;}
+/* 修改表头字体颜色 */
+/*.el-table thead {color: #8EB7FA;}
+!* 修改头部单元格边框颜色 *!
+.el-table th.is-leaf {border: 1px solid #114696}
+
+!* 修改【基数】行背景 *!
+.el-table tr{background: #1f284c;}
+
+!* 修改【基数】行单元格边框 *!
+.el-table tr td{border: 1px solid #114696}
+
+!* 修改【偶数】行背景和单元格边框颜色 *!
+.el-table--striped .el-table__body tr.el-table__row--striped td {background: #1f284c;border: 1px solid #114696}
+
+!* 修改表格最底部颜色*!
+.el-table::before{background:#1f284c;z-index: 0;}
+
+!* 修改表格内容部分字体颜色 *!
+.el-table{color: #fff;}
+
+!* 修改表格无数据背景，字体颜色 *!
+.el-table__empty-block{background: #16203C;}
+.el-table__empty-text{color: #ccc}
+
+!* 修改表格鼠标悬浮hover背景色和字体样式 *!
+.el-table--enable-row-hover .el-table__body tr:hover>td {background-color: #114695;color: red;}*/
+
+/*解决列表数据过长poper一行显示太长不美观问题*/
+.el-tooltip__popper{
+    max-width: 500px;
+}
+
+/*解决下拉菜单选项太长，自动撑开不出现滚动条问题*/
+.el-select-dropdown{
+    max-width: 500px;
+}
+.el-select-dropdown__item{
+    display: inline-block;
+}
+.el-select-dropdown__item span {
+    min-width: 205px;
+    display: inline-block;
+}

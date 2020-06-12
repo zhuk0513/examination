@@ -1,33 +1,29 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <base th:href="@{/}">
-    <script src="scripts/head.js"></script>
-</head>
-<body>
-<div id="personManage" v-cloak >
-    {{srcUrl}}
-</div>
-</body>
-<script th:inline="javascript">
-    let path=[[${#httpServletRequest.getContextPath()}]];
-</script>
-<script>
-    let personManageVm=new Vue({
-        el:'#personManage',
-        data:{
-            srcUrl:''
-        },
-        mounted(){
-            this.init();
-        },
-        methods:{
-            init(){
-                this.srcUrl="personManage.html";
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="common/layer(title='人员管理')">
+<div th:fragment="main_content">
+    <div  id="personManage" v-cloak>
+        {{srcUrl}}
+    </div>
+    <script th:inline="javascript">
+        let path = [[${#httpServletRequest.getContextPath()}]];
+    </script>
+    <script th:inline="javascript">
+        let personManageVm = new Vue({
+            el: '#personManage',
+            data: {
+                srcUrl: ''
+            },
+            mounted() {
+                this.init();
+            },
+            methods: {
+                init() {
+                    this.srcUrl = "personManage.html";
+                }
             }
-        }
-    });
-</script>
+        });
+    </script>
+</div>
+
 </html>

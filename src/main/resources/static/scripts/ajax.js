@@ -71,8 +71,8 @@ function defaultError(XMLHttpRequest, textStatus, errorThrown)
  * @param params 页面传参 json格式
  * @param target '_self'在当前页面打开,'_blank'在新页面打开
  */
-function goToUrl(url,params,target){
-	let str='/goToUrl?url='+url+'&params='+encodeURI(JSON.stringify(params));
+function goToUrl(basePath,url,params,target){
+	let str=basePath+'/goToUrl?url='+url+'&params='+encodeURI(JSON.stringify(params));
 	switch (target) {
 		case '_self':
 			window.location.href=str;
