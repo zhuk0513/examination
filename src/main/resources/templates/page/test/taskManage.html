@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       th:replace="common/layer(title='任务管理')">
 <div th:fragment="main_content">
@@ -201,9 +200,6 @@
                  </span>
             </el-dialog>-->
     </div>
-    <script th:inline="javascript">
-        let path = [[${#httpServletRequest.getContextPath()}]];
-    </script>
     <script>
         /**
          * 这个界面参数命名改成通用的命名，没有表示模块的前缀参数（换成data）,方便后面复用
@@ -361,7 +357,7 @@
                     taskManageVm.catFlag = false;
                 },
                 getOneData(id) {
-                    ajax(path + "/taskManage/getOneTaskManage", 'get', {id: id}, function (res) {
+                    ajax(basePath + "/taskManage/getOneTaskManage", 'get', {id: id}, function (res) {
                         if (res.code == 1) {
                             taskManageVm.dataForm = res.result;
                             taskManageVm.dataForm.department = taskManageVm.dataForm.department ? JSON.parse(taskManageVm.dataForm.department) : [];
@@ -372,7 +368,7 @@
                     });
                 },
                 search() {
-                    ajax(path + "/taskManage/findPageTaskManage", 'get', {
+                    ajax(basePath + "/taskManage/findPageTaskManage", 'get', {
                         name: taskManageVm.searchName,
                         type: taskManageVm.searchType,
                         status: taskManageVm.searchStatus,
@@ -406,7 +402,7 @@
                 },
                 deleteData() {
                     if (taskManageVm.delIds.length > 0) {
-                        ajax(path + "/taskManage/deleteTaskManage", 'delete', {ids: taskManageVm.delIds.join(',')}, function (res) {
+                        ajax(basePath + "/taskManage/deleteTaskManage", 'delete', {ids: taskManageVm.delIds.join(',')}, function (res) {
                             if (res.code == 1) {
                                 taskManageVm.$message({showClose: true, message: res.msg, type: 'success'});
                                 taskManageVm.search();
@@ -430,7 +426,7 @@
                                 method = 'post';
                             }
 
-                            ajax(path + url, method, {params: JSON.stringify(taskManageVm.dataForm)}, function (res) {
+                            ajax(basePath + url, method, {params: JSON.stringify(taskManageVm.dataForm)}, function (res) {
                                 if (res.code == 1) {
                                     taskManageVm.search();
                                     taskManageVm.colseAdd();

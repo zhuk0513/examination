@@ -53,9 +53,9 @@
 .el-select-dropdown{
     max-width: 500px;
 }
-.el-select-dropdown__item{
+/*.el-select-dropdown__item{
     display: inline-block;
-}
+}*/
 .el-select-dropdown__item span {
     min-width: 205px;
     display: inline-block;
