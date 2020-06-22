@@ -83,7 +83,7 @@ public class TaskManageServiceImpl extends ServiceImpl<TaskManageMapper, TaskMan
         } catch (Exception e) {
             result.setCode(ResultJson.Code.FAIL_CODE.toString());
             result.setMsg(ResultJson.Msg.FAIL_MSG.toString());
-            log.error("新建告警策略失败" + e.getMessage());
+            log.error("新建任务管理失败" + e.getMessage());
         }
         return result;
     }
@@ -100,7 +100,7 @@ public class TaskManageServiceImpl extends ServiceImpl<TaskManageMapper, TaskMan
         } catch (Exception e) {
             result.setCode(ResultJson.Code.FAIL_CODE.toString());
             result.setMsg(ResultJson.Msg.FAIL_MSG.toString());
-            log.error("修改告警策略失败" + e.getMessage());
+            log.error("修改任务管理失败" + e.getMessage());
         }
         return result;
     }
@@ -114,7 +114,7 @@ public class TaskManageServiceImpl extends ServiceImpl<TaskManageMapper, TaskMan
         } catch (Exception e) {
             result.setCode(ResultJson.Code.FAIL_CODE.toString());
             result.setMsg(ResultJson.Msg.FAIL_MSG.toString());
-            log.error("修改告警策略失败" + e.getMessage());
+            log.error("修改任务管理失败" + e.getMessage());
         }
         return result;
     }
@@ -129,7 +129,7 @@ public class TaskManageServiceImpl extends ServiceImpl<TaskManageMapper, TaskMan
         } catch (Exception e) {
             result.setCode(ResultJson.Code.FAIL_CODE.toString());
             result.setMsg(ResultJson.Msg.FAIL_MSG.toString());
-            log.error("修改告警策略失败" + e.getMessage());
+            log.error("修改任务管理失败" + e.getMessage());
         }
         return result;
 

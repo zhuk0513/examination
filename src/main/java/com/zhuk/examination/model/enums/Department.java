@@ -9,6 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author 朱楷
+ */
+
 @Getter
 public enum Department implements BaseEnum{
     DEVELOPMENT("DEVELOPMENT","开发部"),
@@ -16,36 +20,21 @@ public enum Department implements BaseEnum{
     AFTER_SALE_SERVICE("AFTER_SALE_SERVICE","售后服务部"),
     SALE("SALE","销售部");
 
-
+    /**
+     * 序列化标记响应json值
+     */
+//    @JsonValue
+    /**
+     * 标记数据库存的值是code
+     */
     @EnumValue
-    @JsonValue
     private final String code;
-    private final String descp;
 
-    Department(String code,String descp) {
+    private final String desc;
+
+    Department(String code,String desc) {
         this.code=code;
-        this.descp = descp;
+        this.desc = desc;
     }
 
-    public static void main(String[] args) {
-        try {
-            String name="Department";
-            String[] names = name.split(",");
-            Map<String, List<Object>> maps = new HashMap<>();
-            for (String nm : names) {
-                String enumPackage = "com.zhuk.examination.model.enums";
-                Class<Enum> clazz = (Class<Enum>) Class.forName(enumPackage + "." + nm);
-                Enum[] objs = clazz.getEnumConstants();
-                List<Object> ls = new ArrayList<>();
-                for (Enum obj : objs) {
-                    ls.add(obj);
-                }
-                maps.put(nm, ls);
-            }
-            System.out.println(maps);
-        } catch (Exception e) {
-           e.printStackTrace();
-        }
-
-    }
 }

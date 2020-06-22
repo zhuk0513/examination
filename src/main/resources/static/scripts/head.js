@@ -7,5 +7,6 @@ document.write('<script src="scripts/jquery.min.js"></script>');
 document.write('<script src="scripts/vue/vue.js"></script>');
 document.write('<script src="scripts/element-ui/lib/index.js"></script>');
 document.write('<script src="scripts/layui/layui.js"></script>');
+document.write('<script src="scripts/dateUtils.js"></script>');
 document.write('<script src="scripts/ajax.js"></script>');
 document.write('<script src="scripts/myUtils.js"></script>');

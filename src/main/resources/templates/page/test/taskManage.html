@@ -35,15 +35,13 @@
                     <el-col :span="7" :offset="6">
                         <span>任务类型：</span>
                         <el-select v-model=" searchType" placeholder="任务类型" clearable>
-                            <el-option v-for="(val,name,i) in TaskType" :label="val" :value="name"
-                                       :key="val"></el-option>
+                            <el-option v-for="(item,i) in TaskType" :label="item.desc" :value="item.code" :key="item.code"></el-option>
                         </el-select>
                     </el-col>
                     <el-col :span="6">
                         <span>任务状态：</span>
                         <el-select v-model="searchStatus" placeholder="任务状态" clearable>
-                            <el-option v-for="(val,name,i) in TaskStatus" :label="val" :value="name"
-                                       :key="val"></el-option>
+                            <el-option v-for="(item,i) in TaskStatus" :label="item.desc" :value="item.code" :key="item.code"></el-option>
                         </el-select>
                     </el-col>
                     <el-col :span="5">
@@ -75,39 +73,38 @@
                             width="300" :show-overflow-tooltip="true">
                     </el-table-column>
                     <el-table-column
+                            prop="type"
                             label="任务类型"
-                            width="120">
-                        <template slot-scope="scope">
-                            <p>{{TaskType[scope.row.type]}}</p>
-                        </template>
+                            width="120"
+                            :formatter="formatTaskType"
+                    >
                     </el-table-column>
                     <el-table-column
+                            prop="deadline"
                             label="截止时间"
-                            width="200">
-                        <template slot-scope="scope">
-                            <p>{{scope.row.deadline|formatTime}}</p>
-                        </template>
+                            width="200"
+                            :formatter="formatTime"
+                    >
                     </el-table-column>
                     <el-table-column
+                            prop="createTime"
                             label="发布时间"
-                            width="200">
-                        <template slot-scope="scope">
-                            <p>{{scope.row.createTime|formatTime}}</p>
-                        </template>
+                            width="200"
+                            :formatter="formatTime"
+                    >
                     </el-table-column>
                     <el-table-column
+                            prop="department"
                             label="执行部门"
-                            width="200">
-                        <template slot-scope="scope">
-                            <span v-for="(key,i) in JSON.parse(scope.row.department)">{{Department[key]}} </span>
-                        </template>
+                            width="200"
+                            :formatter="formatDepartment"
+                    >
                     </el-table-column>
                     <el-table-column
                             label="任务状态"
-                            width="80">
-                        <template slot-scope="scope">
-                            <p>{{TaskStatus[scope.row.status]}}</p>
-                        </template>
+                            width="80"
+                            :formatter="formatTaskStatus"
+                    >
                     </el-table-column>
                     <el-table-column label="操作">
                         <template slot-scope="scope">
@@ -150,7 +147,7 @@
                 </el-pagination>
             </div>
         </el-row>
-        <el-dialog :title="(catFlag?'查看':editFlag?'修改':'新建')+'任务'" :visible.sync="addVisible" width="50%" center :append-to-body="true">
+        <el-dialog :title="(catFlag?'查看':editFlag?'修改':'新建')+'任务'" :visible.sync="addVisible" width="50%" center :append-to-body="true" :close-on-click-modal="false">
             <el-form :model="dataForm" :rules="rules" ref="dataForm" label-width="100px">
                 <el-form-item label="任务名称：" prop="name">
                     <el-input v-model="dataForm.name" :disabled="catFlag"></el-input>
@@ -160,7 +157,8 @@
                 </el-form-item>
                 <el-form-item label="任务类型：" prop="type">
                     <el-select v-model="dataForm.type" placeholder="任务类型" :disabled="catFlag">
-                        <el-option v-for="(val,name,i) in TaskType" :label="val" :value="name" :key="val"></el-option>
+                        <!--<el-option v-for="(val,name,i) in TaskType" :label="val" :value="name" :key="val"></el-option>-->
+                        <el-option v-for="(item,i) in TaskType" :label="item.desc" :value="item.code" :key="item.code"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="截止日期：" prop="deadline">
@@ -172,12 +170,13 @@
                 </el-form-item>
                 <el-form-item label="任务状态：" prop="status">
                     <el-select v-model="dataForm.status" placeholder="任务类型" :disabled="catFlag">
-                        <el-option v-for="(val,name,i) in TaskStatus" :label="val" :value="name" :key="val"></el-option>
+                        <!--<el-option v-for="(val,name,i) in TaskStatus" :label="val" :value="name" :key="val"></el-option>-->
+                        <el-option v-for="(item,i) in TaskStatus" :label="item.desc" :value="item.code" :key="item.code"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="执行部门：" prop="department">
                     <el-select v-model="dataForm.department" placeholder="任务类型" multiple :disabled="catFlag">
-                        <el-option v-for="(val,name,i) in Department" :label="val" :value="name" :key="val"></el-option>
+                        <el-option v-for="(item,i) in Department" :label="item.desc" :value="item.code" :key="item.code"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item v-if="catFlag">
@@ -200,13 +199,13 @@
                  </span>
             </el-dialog>-->
     </div>
-    <script>
-        /**
-         * 这个界面参数命名改成通用的命名，没有表示模块的前缀参数（换成data）,方便后面复用
-         */
-        let TaskType = {'PROJECT': '项目任务', 'PERSONAL': '个人任务'};
-        let TaskStatus = {'COMPLETE': '完成', 'HANDLING': '办理中', 'NOT_HANDLE': '未办理'};
-        let Department = {'DEVELOPMENT': '开发部', 'TEST': '测试部', 'AFTER_SALE_SERVICE': '售后服务部', 'SALE': '销售部'};
+    <script>/**
+     * 这个界面参数命名改成通用的命名，没有表示模块的前缀参数（换成data）,方便后面复用
+     */
+
+        // let TaskType = {'PROJECT': '项目任务', 'PERSONAL': '个人任务'};
+        // let TaskStatus = {'COMPLETE': '完成', 'HANDLING': '办理中', 'NOT_HANDLE': '未办理'};
+        // let Department = {'DEVELOPMENT': '开发部', 'TEST': '测试部', 'AFTER_SALE_SERVICE': '售后服务部', 'SALE': '销售部'};
         let dataForm = {
             id: '',
             name: '',
@@ -241,9 +240,9 @@
                     status: true,
                     editFlag: false,//修改标识
                     catFlag: false,//查看标识
-                    TaskType: TaskType,
-                    TaskStatus: TaskStatus,
-                    Department: Department,
+                    TaskType: [],
+                    TaskStatus: [],
+                    Department: [],
                     searchName: '',
                     searchStatus: '',
                     searchType: '',
@@ -277,30 +276,43 @@
             },
             mounted() {
                 this.$nextTick(() => {
-                    taskManageVm.search();
+                    taskManageVm.getEnums();
                 });
             },
-            filters: {
-                formatTime(date) {
-
-                    if (!date) return ''
-                    let date_format = new Date(date)
-                    let year = date_format.getFullYear()
-                    let month = date_format.getMonth() + 1
-                    if (month < 10) month = '0' + month
-                    let mydate = date_format.getDate()
-                    if (mydate < 10) mydate = '0' + mydate
-                    let hours = date_format.getHours()
-                    if (hours < 10) hours = '0' + hours
-                    let minutes = date_format.getMinutes()
-                    if (minutes < 10) minutes = '0' + minutes
-                    let seconds = date_format.getSeconds()
-                    if (seconds < 10) seconds = '0' + seconds
-                    let time = `${year}-${month}-${mydate} ${hours}:${minutes}:${seconds}`
-                    return time
-                }
-            },
             methods: {
+                getEnums(){
+                    //获取后台枚举类型
+                    ajax('getEnums','get',{enumNames:'TaskStatus,TaskType,Department'},function (res){
+                        if(res.code==1){
+                            taskManageVm.TaskStatus=res.result['TaskStatus'];
+                            taskManageVm.TaskType=res.result['TaskType'];
+                            taskManageVm.Department=res.result['Department'];
+                        }
+                        taskManageVm.search();
+                    })
+                },
+                formatTaskStatus(row, column){
+                    return row.status.desc;
+                },
+                formatTaskType(row, column){
+                    return row.type.desc;
+                },
+                formatDepartment(row, column){
+                    let departments=JSON.parse(row.department);
+                    let name='';
+                    departments.forEach((val,i)=>{
+                        for(let key in this.Department){
+                            if(this.Department[key].code==val){
+                                name+= this.Department[key].desc+' ';
+                                break;
+                            }
+                        }
+                    });
+                    return name;
+                },
+                formatTime(row, column) {
+                    return dateFormat(row[column.property])
+                },
                 showTag(id) {
                     $("#" + id + 'edit').show();
                     $("#" + id + 'cat').show();
@@ -360,6 +372,8 @@
                     ajax(basePath + "/taskManage/getOneTaskManage", 'get', {id: id}, function (res) {
                         if (res.code == 1) {
                             taskManageVm.dataForm = res.result;
+                            taskManageVm.dataForm.status=res.result.status.code;
+                            taskManageVm.dataForm.type=res.result.type.code;
                             taskManageVm.dataForm.department = taskManageVm.dataForm.department ? JSON.parse(taskManageVm.dataForm.department) : [];
                             taskManageVm.addVisible = true;
                         } else {
@@ -404,6 +418,7 @@
                     if (taskManageVm.delIds.length > 0) {
                         ajax(basePath + "/taskManage/deleteTaskManage", 'delete', {ids: taskManageVm.delIds.join(',')}, function (res) {
                             if (res.code == 1) {
+                                taskManageVm.delVisible=false;
                                 taskManageVm.$message({showClose: true, message: res.msg, type: 'success'});
                                 taskManageVm.search();
                             } else {
