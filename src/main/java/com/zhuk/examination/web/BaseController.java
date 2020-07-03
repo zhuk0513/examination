@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class BaseController {
      * @param params
      * @return
      */
-    @GetMapping("goToUrl")
+    @PostMapping("goToUrl")
     public String goToUrl(Model model, String url, String params){
         if(!GkStringUtils.isEmpty(params)){
             JSONObject jsonObject=JSONObject.parseObject(params);
@@ -72,4 +73,6 @@ public class BaseController {
         }
         return result;
     }
+
+
 }

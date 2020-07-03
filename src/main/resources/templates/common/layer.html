@@ -5,33 +5,46 @@
     <!--/*@thymesVar id="title" type=""*/-->
     <title th:text="${title}">Title</title>
     <base th:href="@{/}">
-    <script src="scripts/head.js"></script>
+    <link rel="stylesheet" href="scripts/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="stylesheet/css/main.css">
+    <link rel="stylesheet" href="scripts/layui/css/layui.css">
+    <link rel="stylesheet" href="scripts/zTree/css/metroStyle/metroStyle.css">
+
+    <script src="scripts/jquery.min.js"></script>
+    <script src="scripts/echarts.js"></script>
+    <script src="scripts/zTree/js/jquery.ztree.all.min.js"></script>
+    <script src="scripts/vue/vue.js"></script>
+    <script src="scripts/element-ui/lib/index.js"></script>
+    <script src="scripts/layui/layui.js"></script>
+    <script src="scripts/ajax.js"></script>
+    <script src="scripts/myUtils.js"></script>
     <script th:inline="javascript">
         const basePath = [[${#httpServletRequest.getContextPath()}]];
-        const pageIndex = [[${pageIndex}]];
+        let pageIndex = [[${pageIndex}]];
+        pageIndex=pageIndex==null?'a-a':pageIndex;
     </script>
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
-        <div class="layui-logo" onclick="goMenu('index')">智能能源服务平台</div>
+        <div class="layui-logo" onclick="goMenu('index')">考试项目</div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
-<!--            <li class="layui-nav-item"><a href="">控制台</a></li>
-            <li class="layui-nav-item"><a href="">商品管理</a></li>
-            <li class="layui-nav-item"><a href="">用户</a></li>
-            <li class="layui-nav-item">
-                <a href="javascript:;">其它系统</a>
-                <dl class="layui-nav-child">
-                    <dd><a href="">邮件管理</a></dd>
-                    <dd><a href="">消息管理</a></dd>
-                    <dd><a href="">授权管理</a></dd>
-                </dl>
-            </li>-->
+            <!--            <li class="layui-nav-item"><a href="">控制台</a></li>
+                        <li class="layui-nav-item"><a href="">商品管理</a></li>
+                        <li class="layui-nav-item"><a href="">用户</a></li>
+                        <li class="layui-nav-item">
+                            <a href="javascript:;">其它系统</a>
+                            <dl class="layui-nav-child">
+                                <dd><a href="">邮件管理</a></dd>
+                                <dd><a href="">消息管理</a></dd>
+                                <dd><a href="">授权管理</a></dd>
+                            </dl>
+                        </li>-->
         </ul>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
-                <a href=""><img src="//t.cn/RCzsdCq" class="layui-nav-img">管理员</a>
+                <a href=""><!--<img src="//t.cn/RCzsdCq" class="layui-nav-img">-->管理员</a>
                 <dl class="layui-nav-child">
                     <dd><a href="javascript:;">基本信息</a></dd>
                     <dd><a href="javascript:;">安全管理</a></dd>
@@ -41,52 +54,111 @@
         </ul>
     </div>
 
-    <div class="layui-side layui-bg-cyan">
+    <div class="layui-side layui-bg-cyan" id="menuDiv">
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree"  lay-filter="test">
-                <li class="layui-nav-item">
-                    <a class="" href="javascript:;">信息管理</a>
-                    <dl class="layui-nav-child">
-                        <dd id="meun1-1"><a onclick="goMenu('page/test/taskManage','1-1')">任务管理</a></dd>
-                        <dd id="meun1-2"><a onclick="goMenu('page/test/personManage','1-2')">人员管理</a></dd>
-                    </dl>
-                </li>
-                <li class="layui-nav-item">
-                    <a href="javascript:;">数据分析</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="javascript:;">列表一</a></dd>
-                        <dd><a href="javascript:;">列表二</a></dd>
+                <li :class="'layui-nav-item'+(pageIndex.split('-')[0]==i?' layui-nav-itemed':'')" v-for="(menu,i) in menuData">
+                    <a class="" href="javascript:;">{{menu.name}}</a>
+                    <dl class="layui-nav-child" v-for="(sMenu,j) in menu.children">
+                        <dd :class="pageIndex==(i+'-'+j)?'layui-this':''"><a @click="goMenu(sMenu.path,i+'-'+j)">{{sMenu.name}}</a></dd>
+                        <!--                        <dd id="meun1-1"><a onclick="goMenu('page/test/taskManage','1-1')">任务管理</a></dd>-->
+                        <!--                        <dd id="meun1-2"><a onclick="goMenu('page/test/personManage','1-2')">人员管理</a></dd>-->
                     </dl>
                 </li>
             </ul>
         </div>
     </div>
 
-    <div class="layui-body">
+    <div class="layui-body" style="">
+        <div id="indexDiv">
+                <span class="layui-breadcrumb" v-if="pageIndex!=mainIndex">
+                  <a  @click="goMenu('index')">首页</a>
+
+                  <a v-for="(index,i) in breadcrumbArr">
+                      <cite v-if="(index.length-1)==i">{{index.name}}</cite>
+                      <span v-else>{{index.name}}</span>
+                  </a>
+                </span>
+        </div>
+
         <div th:include="::main_content" style="padding: 15px;">页面正文内容</div>
     </div>
-
+    <form id="gotoUrlForm" style="display:none;" action="" method="post" target="_self">
+        <input type="text" id="url" name="url" />
+        <input type="text" id="params" name="params" />
+    </form>
     <div class="layui-footer">
         <!-- 底部固定区域 -->
-        智能能源服务&copy;2020
+        考试项目&copy;2020
     </div>
 </div>
 <script>
-    //JavaScript代码区域
+    //首页
+    const mainIndex='a-a';
     layui.use('element', function(){
         var element = layui.element;
-        if(pageIndex){
-            let menuIndexs=pageIndex.split('-');
-            if(menuIndexs.length==2){
-                $("#meun"+pageIndex).addClass("layui-this");
-                $("#meun"+pageIndex).parent().parent().addClass("layui-nav-itemed")
-            }
-        }
     });
     function goMenu (url,index){
         goToUrl(basePath, url, {pageIndex:index}, '_self');
     }
+    let menuData=[
+        {
+            name:'考试样例',
+            path:'',
+            children:[
+                {
+                    name:'任务管理',
+                    path:'page/test/taskManage'
+                },
+                {
+                    name:'人员管理',
+                    path:'page/test/personManage'
+                }
+            ]
+        }
+    ];
+    let menuVm= new Vue({
+        el:'#menuDiv',
+        data:{
+            menuData:menuData,
+            pageIndex:pageIndex
+        },
+        mounted(){
+            this.$nextTick(function(){
+
+            });
+        },
+        methods:{
+            goMenu:goMenu
+        }
+    });
+    let indexVm=new Vue({
+        el:'#indexDiv',
+        data:{
+            breadcrumbArr:[],
+            pageIndex:pageIndex,
+            mainIndex:mainIndex
+        },
+        mounted() {
+            this.$nextTick(function(){
+                if(this.pageIndex!=this.mainIndex){
+                    let index=this.pageIndex.split('-');
+                    for(let i in index){
+                        switch (i) {
+                            case '0':
+                                this.breadcrumbArr.push(menuData[index[0]]);break;
+                            case '1':
+                                this.breadcrumbArr.push(menuData[index[0]].children[index[1]]);break;
+                        }
+                    }
+                }
+            });
+        },
+        methods: {
+            goMenu:goMenu
+        }
+    });
 </script>
 </body>
 </html>

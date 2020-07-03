@@ -72,17 +72,23 @@ function defaultError(XMLHttpRequest, textStatus, errorThrown)
  * @param target '_self'在当前页面打开,'_blank'在新页面打开
  */
 function goToUrl(basePath,url,params,target){
-	let str=basePath+'/goToUrl?url='+url+'&params='+encodeURI(JSON.stringify(params));
-	switch (target) {
-		case '_self':
-			window.location.href=str;
-			break;
-		case '_blank':
-			window.open(str);
-			break;
-		default:
-			window.location.href=str;
-	}
+	// let str=basePath+'/goToUrl?url='+url+'&params='+encodeURI(JSON.stringify(params));
+	// switch (target) {
+	// 	case '_self':
+	// 		window.location.href=str;
+	// 		break;
+	// 	case '_blank':
+	// 		window.open(str);
+	// 		break;
+	// 	default:
+	// 		window.location.href=str;
+	// }
+
+	$('#gotoUrlForm').attr('action',basePath+'/goToUrl');
+	$('#gotoUrlForm').attr('target',target==undefined?'_self':target);
+	$('#url').val(url);
+	$('#params').val(JSON.stringify(params));
+	$('#gotoUrlForm').submit();
 }
 
 function login_timeout() {

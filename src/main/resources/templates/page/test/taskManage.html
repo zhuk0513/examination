@@ -2,202 +2,250 @@
       th:replace="common/layer(title='任务管理')">
 <div th:fragment="main_content">
     <div id="taskManage" v-cloak>
-        <el-row>
-            <el-row>
+        <el-tabs v-model="activeName" >
+            <el-tab-pane label="图表展示" name="first">
+
                 <el-row>
-                    <!--        <el-col :span="2"><el-button icon="el-icon-refresh" @click="">刷新</el-button></el-col>-->
-                    <el-col :span="6">
-                        <el-button icon="el-icon-circle-plus-outline" @click="addDataForm">添加</el-button>
+                    <el-col :sapn="12">
+                        <el-card  style="width:100%;height: 350px;">
+                            <div slot="header" class="clearfix">
+                                <span>任务截止时间统计:</span>
+                                <span></span>
+                                <div id="dayData" style="height: 280px; width: 100%"></div>
+                            </div>
+                        </el-card>
                     </el-col>
-                    <!--        <el-col :span="2">
-                              <el-popconfirm title="确定要删除吗？" @onConfirm="deleteData">
-                                <el-button slot="reference" icon="el-icon-delete-solid" >删除</el-button>
-                              </el-popconfirm>
-                            </el-col>-->
-                    <el-col :span="7"><span>任务名称：</span>
-                        <el-input v-model="searchName" placeholder="任务名称" clearable style="width: 300px"></el-input>
-                    </el-col>
-                    <el-col :span="8">
-                        <span>发布时间：</span>
-                        <el-date-picker
-                                v-model="searchTime"
-                                type="datetimerange"
-                                range-separator="至"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期"
-                                value-format="yyyy-MM-dd HH:mm:ss"
-                        >
-                        </el-date-picker>
-                    </el-col>
-                </el-row>
-                <el-row style="margin-top: 10px">
 
-                    <el-col :span="7" :offset="6">
-                        <span>任务类型：</span>
-                        <el-select v-model=" searchType" placeholder="任务类型" clearable>
-                            <el-option v-for="(item,i) in TaskType" :label="item.desc" :value="item.code" :key="item.code"></el-option>
-                        </el-select>
-                    </el-col>
-                    <el-col :span="6">
-                        <span>任务状态：</span>
-                        <el-select v-model="searchStatus" placeholder="任务状态" clearable>
-                            <el-option v-for="(item,i) in TaskStatus" :label="item.desc" :value="item.code" :key="item.code"></el-option>
-                        </el-select>
-                    </el-col>
-                    <el-col :span="5">
-                        <el-button @click="search()">查询</el-button>
+                    <el-col :sapn="12">
+                        <el-card  style="width:100%;height: 350px;">
+                            <div slot="header" class="clearfix">
+                                <span>任务状态统计:</span>
+                                <span></span>
+                                <div id="rangeDate" style="height: 280px; width: 100%"></div>
+                            </div>
+                        </el-card>
                     </el-col>
                 </el-row>
 
-            </el-row>
-            <el-divider></el-divider>
-            <template>
-                <el-table
-                        ref="multipleTable1"
-                        :data="dataList"
-                        tooltip-effect="dark"
-                        style="width: 100%"
-                        @selection-change="handleSelectionChange" id="printTest">
-                    <el-table-column
-                            type="selection"
-                            width="55">
-                    </el-table-column>
-                    <el-table-column
-                            prop="name"
-                            label="任务名称"
-                            width="220">
-                    </el-table-column>
-                    <el-table-column
-                            prop="content"
-                            label="任务内容"
-                            width="300" :show-overflow-tooltip="true">
-                    </el-table-column>
-                    <el-table-column
-                            prop="type"
-                            label="任务类型"
-                            width="120"
-                            :formatter="formatTaskType"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                            prop="deadline"
-                            label="截止时间"
-                            width="200"
-                            :formatter="formatTime"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                            prop="createTime"
-                            label="发布时间"
-                            width="200"
-                            :formatter="formatTime"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                            prop="department"
-                            label="执行部门"
-                            width="200"
-                            :formatter="formatDepartment"
-                    >
-                    </el-table-column>
-                    <el-table-column
-                            label="任务状态"
-                            width="80"
-                            :formatter="formatTaskStatus"
-                    >
-                    </el-table-column>
-                    <el-table-column label="操作">
-                        <template slot-scope="scope">
-                            <el-button
-                                    size="mini"
-                                    @click="catData(scope.row.id)">查看
-                            </el-button>
-                            <el-button
-                                    size="mini"
-                                    @click="editData(scope.row.id)">编辑
-                            </el-button>
-                            <el-button
-                                    slot="reference"
-                                    size="mini"
-                                    type="danger"
-                                    @click="delVisible = true"
-                                    :disabled="scope.row.status=='HANDLING'?true:false">删除
-                            </el-button>
-                            <el-dialog title="提示" :visible.sync="delVisible" width="300px" center
-                                       :append-to-body="true">
-                                <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
-                                <span slot="footer" class="dialog-footer">
+            </el-tab-pane>
+            <el-tab-pane label="表格展示" name="second">
+                <el-row>
+                    <el-row>
+                        <el-row>
+                            <!--        <el-col :span="2"><el-button icon="el-icon-refresh" @click="">刷新</el-button></el-col>-->
+                            <el-col :span="6">
+                                <el-button icon="el-icon-circle-plus-outline" @click="addDataForm">添加</el-button>
+                                <el-button icon="el-icon-upload2" @click="importVisible=true">导入</el-button>
+                                <a href="导入模板.xlsx" download="导入模板.xlsx">导入模板.xlsx</a>
+                                <el-button icon="el-icon-export" @click="exportData">导出</el-button>
+                            </el-col>
+                            <!--        <el-col :span="2">
+                                      <el-popconfirm title="确定要删除吗？" @onConfirm="deleteData">
+                                        <el-button slot="reference" icon="el-icon-delete-solid" >删除</el-button>
+                                      </el-popconfirm>
+                                    </el-col>-->
+                            <el-col :span="7"><span>任务名称：</span>
+                                <el-input v-model="searchName" placeholder="任务名称" clearable style="width: 300px"></el-input>
+                            </el-col>
+                            <el-col :span="8">
+                                <span>发布时间：</span>
+                                <el-date-picker
+                                        v-model="searchTime"
+                                        type="datetimerange"
+                                        range-separator="至"
+                                        start-placeholder="开始日期"
+                                        end-placeholder="结束日期"
+                                        value-format="yyyy-MM-dd HH:mm:ss"
+                                >
+                                </el-date-picker>
+                            </el-col>
+                        </el-row>
+                        <el-row style="margin-top: 10px">
+
+                            <el-col :span="7" :offset="6">
+                                <span>任务类型：</span>
+                                <el-select v-model=" searchType" placeholder="任务类型" clearable>
+                                    <el-option v-for="(item,i) in TaskType" :label="item.desc" :value="item.code" :key="item.code"></el-option>
+                                </el-select>
+                            </el-col>
+                            <el-col :span="6">
+                                <span>任务状态：</span>
+                                <el-select v-model="searchStatus" placeholder="任务状态" clearable>
+                                    <el-option v-for="(item,i) in TaskStatus" :label="item.desc" :value="item.code" :key="item.code"></el-option>
+                                </el-select>
+                            </el-col>
+                            <el-col :span="5">
+                                <el-button @click="search()">查询</el-button>
+                            </el-col>
+                        </el-row>
+
+                    </el-row>
+                    <el-divider></el-divider>
+                    <template>
+                        <el-table
+                                ref="multipleTable1"
+                                :data="dataList"
+                                tooltip-effect="dark"
+                                style="width: 100%"
+                                @selection-change="handleSelectionChange" id="printTest">
+                            <el-table-column
+                                    type="selection"
+                                    width="55">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="name"
+                                    label="任务名称"
+                                    width="220">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="content"
+                                    label="任务内容"
+                                    width="300" :show-overflow-tooltip="true">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="type"
+                                    label="任务类型"
+                                    width="120"
+                                    :formatter="formatTaskType"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                    prop="deadline"
+                                    label="截止时间"
+                                    width="200"
+                                    :formatter="formatTime"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                    prop="createTime"
+                                    label="发布时间"
+                                    width="200"
+                                    :formatter="formatTime"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                    prop="department"
+                                    label="执行部门"
+                                    width="200"
+                                    :formatter="formatDepartment"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                    label="任务状态"
+                                    width="80"
+                                    :formatter="formatTaskStatus"
+                            >
+                            </el-table-column>
+                            <el-table-column label="操作">
+                                <template slot-scope="scope">
+                                    <el-button
+                                            size="mini"
+                                            @click="catData(scope.row.id)">查看
+                                    </el-button>
+                                    <el-button
+                                            size="mini"
+                                            @click="editData(scope.row.id)">编辑
+                                    </el-button>
+                                    <el-button
+                                            slot="reference"
+                                            size="mini"
+                                            type="danger"
+                                            @click="delVisible = true"
+                                            :disabled="scope.row.status=='HANDLING'?true:false">删除
+                                    </el-button>
+                                    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center
+                                               :append-to-body="true">
+                                        <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
+                                        <span slot="footer" class="dialog-footer">
                                 <el-button @click="delVisible = false">取 消</el-button>
                                 <el-button type="primary" @click="deleteRow(scope.$index, scope.row)">确 定</el-button>
                             </span>
-                            </el-dialog>
-                        </template>
-                    </el-table-column>
-                </el-table>
-            </template>
-            <div style="margin-top: 20px">
-                <el-pagination
-                        :current-page="curPage"
-                        :page-sizes="[10, 20, 50, 1000]"
-                        :page-size="pageSize"
-                        @current-change="handleCurrentChange"
-                        @size-change="handleSizeChange"
-                        layout="total, sizes, prev, pager, next, jumper"
-                        :total="totalSize">
-                </el-pagination>
-            </div>
-        </el-row>
-        <el-dialog :title="(catFlag?'查看':editFlag?'修改':'新建')+'任务'" :visible.sync="addVisible" width="50%" center :append-to-body="true" :close-on-click-modal="false">
-            <el-form :model="dataForm" :rules="rules" ref="dataForm" label-width="100px">
-                <el-form-item label="任务名称：" prop="name">
-                    <el-input v-model="dataForm.name" :disabled="catFlag"></el-input>
-                </el-form-item>
-                <el-form-item label="任务内容：" prop="content">
-                    <el-input v-model="dataForm.content" :disabled="catFlag"></el-input>
-                </el-form-item>
-                <el-form-item label="任务类型：" prop="type">
-                    <el-select v-model="dataForm.type" placeholder="任务类型" :disabled="catFlag">
-                        <!--<el-option v-for="(val,name,i) in TaskType" :label="val" :value="name" :key="val"></el-option>-->
-                        <el-option v-for="(item,i) in TaskType" :label="item.desc" :value="item.code" :key="item.code"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="截止日期：" prop="deadline">
-                    <el-date-picker
-                            v-model="dataForm.deadline"
-                            type="datetime"
-                            placeholder="选择截止日期" :disabled="catFlag">
-                    </el-date-picker>
-                </el-form-item>
-                <el-form-item label="任务状态：" prop="status">
-                    <el-select v-model="dataForm.status" placeholder="任务类型" :disabled="catFlag">
-                        <!--<el-option v-for="(val,name,i) in TaskStatus" :label="val" :value="name" :key="val"></el-option>-->
-                        <el-option v-for="(item,i) in TaskStatus" :label="item.desc" :value="item.code" :key="item.code"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="执行部门：" prop="department">
-                    <el-select v-model="dataForm.department" placeholder="任务类型" multiple :disabled="catFlag">
-                        <el-option v-for="(item,i) in Department" :label="item.desc" :value="item.code" :key="item.code"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item v-if="catFlag">
-                    <el-button type="info" @click="addVisible=false">关闭</el-button>
-                </el-form-item>
-                <el-form-item v-else="catFlag">
-                    <el-button v-if="editFlag" type="primary" @click="submitForm">修改</el-button>
-                    <el-button v-else type="primary" @click="submitForm">保存</el-button>
-                    <el-button v-if="!editFlag" @click="resetForm">重置</el-button>
-                    <el-button type="info" @click="colseAdd">取消</el-button>
-                </el-form-item>
+                                    </el-dialog>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </template>
+                    <div style="margin-top: 20px">
+                        <el-pagination
+                                :current-page="curPage"
+                                :page-sizes="[10, 20, 50, 1000]"
+                                :page-size="pageSize"
+                                @current-change="handleCurrentChange"
+                                @size-change="handleSizeChange"
+                                layout="total, sizes, prev, pager, next, jumper"
+                                :total="totalSize">
+                        </el-pagination>
+                    </div>
+                </el-row>
+                <el-dialog :title="(catFlag?'查看':editFlag?'修改':'新建')+'任务'" :visible.sync="addVisible" width="50%" center :append-to-body="true" :close-on-click-modal="false">
+                    <el-form :model="dataForm" :rules="rules" ref="dataForm" label-width="100px">
+                        <el-form-item label="任务名称：" prop="name">
+                            <el-input v-model="dataForm.name" :disabled="catFlag"></el-input>
+                        </el-form-item>
+                        <el-form-item label="任务内容：" prop="content">
+                            <el-input v-model="dataForm.content" :disabled="catFlag"></el-input>
+                        </el-form-item>
+                        <el-form-item label="任务类型：" prop="type">
+                            <el-select v-model="dataForm.type" placeholder="任务类型" :disabled="catFlag">
+                                <!--<el-option v-for="(val,name,i) in TaskType" :label="val" :value="name" :key="val"></el-option>-->
+                                <el-option v-for="(item,i) in TaskType" :label="item.desc" :value="item.code" :key="item.code"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="截止日期：" prop="deadline">
+                            <el-date-picker
+                                    v-model="dataForm.deadline"
+                                    type="datetime"
+                                    placeholder="选择截止日期" :disabled="catFlag">
+                            </el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="任务状态：" prop="status">
+                            <el-select v-model="dataForm.status" placeholder="任务类型" :disabled="catFlag">
+                                <!--<el-option v-for="(val,name,i) in TaskStatus" :label="val" :value="name" :key="val"></el-option>-->
+                                <el-option v-for="(item,i) in TaskStatus" :label="item.desc" :value="item.code" :key="item.code"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="执行部门：" prop="department">
+                            <el-select v-model="dataForm.department" placeholder="任务类型" multiple :disabled="catFlag">
+                                <el-option v-for="(item,i) in Department" :label="item.desc" :value="item.code" :key="item.code"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item v-if="catFlag">
+                            <el-button type="info" @click="addVisible=false">关闭</el-button>
+                        </el-form-item>
+                        <el-form-item v-else="catFlag">
+                            <el-button v-if="editFlag" type="primary" @click="submitForm">修改</el-button>
+                            <el-button v-else type="primary" @click="submitForm">保存</el-button>
+                            <el-button v-if="!editFlag" @click="resetForm">重置</el-button>
+                            <el-button type="info" @click="colseAdd">取消</el-button>
+                        </el-form-item>
 
-            </el-form>
-        </el-dialog>
-        <!--    <el-dialog title="提示" :visible.sync="delVisible" width="300px" center>
-                <div class="del-dialog-cnt">删除不可恢复，是否确定删除？</div>
-                <span slot="footer" class="dialog-footer">
-                   <el-button @click="delVisible = false">取 消</el-button>
-                   <el-button type="primary" @click="deviceDelete">确 定</el-button>
-                 </span>
-            </el-dialog>-->
+                    </el-form>
+                </el-dialog>
+                <el-dialog title="导入" :visible.sync="importVisible" width="500px" center :append-to-body="true" :close-on-click-modal="false">
+                    <el-upload
+                            multiple
+                            class="upload-demo"
+                            accept=".xls,.xlsx"
+                            ref="upload"
+                            action=""
+                            :file-list="fileList"
+                            :auto-upload="false"
+                            :http-request="uploadFile"
+                    >
+                        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                        <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">导入文件</el-button>
+                        <div slot="tip" class="el-upload__tip">只能上传xls/xlsx</div>
+                    </el-upload>
+                </el-dialog>
+                <form id="exportForm" style="display:none;" action="" method="post" target="_self">
+                    <input type="text" id="name" name="name" />
+                    <input type="text" id="type" name="type" />
+                    <input type="text" id="status" name="status" />
+                    <input type="text" id="createTime" name="createTime" />
+                </form>
+            </el-tab-pane>
+        </el-tabs>
+
     </div>
     <script>/**
      * 这个界面参数命名改成通用的命名，没有表示模块的前缀参数（换成data）,方便后面复用
@@ -206,7 +254,7 @@
         // let TaskType = {'PROJECT': '项目任务', 'PERSONAL': '个人任务'};
         // let TaskStatus = {'COMPLETE': '完成', 'HANDLING': '办理中', 'NOT_HANDLE': '未办理'};
         // let Department = {'DEVELOPMENT': '开发部', 'TEST': '测试部', 'AFTER_SALE_SERVICE': '售后服务部', 'SALE': '销售部'};
-        let dataForm = {
+    let dataForm = {
             id: '',
             name: '',
             content: '',
@@ -216,245 +264,355 @@
             department: [],
             createTime: ''
         }
-        let taskManageVm = new Vue({
-            el: '#taskManage',
-            data() {
-                let checkName = (rule, value, callback) => {
-                    for (let i in taskManageVm.dataList) {
-                        if (taskManageVm.dataList[i].id != taskManageVm.dataForm.id && taskManageVm.dataList[i].name == taskManageVm.dataForm.name) {
-                            callback(new Error('任务名称不能重复'));
-                            return;
-                        }
-                    }
-                    callback();
-                };
-                return {
-                    pageSize: 10,
-                    curPage: 1,
-                    totalSize: 0,
-                    dataForm: dataForm,
-                    dataFormCopy: dataForm,//用于重置
-                    dataList: [],
-                    delVisible: false,
-                    addVisible: false,
-                    status: true,
-                    editFlag: false,//修改标识
-                    catFlag: false,//查看标识
-                    TaskType: [],
-                    TaskStatus: [],
-                    Department: [],
-                    searchName: '',
-                    searchStatus: '',
-                    searchType: '',
-                    searchTime: [],
-                    delIds: [],
-                    deviceAll: [],
-                    rules: {
-                        name: [
-                            {required: true, message: '请输入任务名称', trigger: ['blur', 'change']},
-                            {min: 3, max: 50, message: '长度在 3 到 50 个字符', trigger: ['blur', 'change']},
-                            {validator: checkName, trigger: ['blur', 'change']}
-                        ],
-                        content: [
-                            {required: true, message: '请输入任务内容', trigger: 'blur'},
-                            {max: 200, message: '长度不能超过200字符', trigger: 'blur'}
-                        ],
-                        type: [
-                            {required: true, message: '请选择任务类型', trigger: 'blur'},
-                        ],
-                        deadline: [
-                            {required: true, message: '请选择截止日期', trigger: 'blur'},
-                        ],
-                        status: [
-                            {required: true, message: '请选择任务状态', trigger: 'blur',},
-                        ],
-                        department: [
-                            {required: true, message: '请选择执行部门', trigger: 'blur'},
-                        ]
-                    }
-                }
-            },
-            mounted() {
-                this.$nextTick(() => {
-                    taskManageVm.getEnums();
-                });
-            },
-            methods: {
-                getEnums(){
-                    //获取后台枚举类型
-                    ajax('getEnums','get',{enumNames:'TaskStatus,TaskType,Department'},function (res){
-                        if(res.code==1){
-                            taskManageVm.TaskStatus=res.result['TaskStatus'];
-                            taskManageVm.TaskType=res.result['TaskType'];
-                            taskManageVm.Department=res.result['Department'];
-                        }
-                        taskManageVm.search();
-                    })
-                },
-                formatTaskStatus(row, column){
-                    return row.status.desc;
-                },
-                formatTaskType(row, column){
-                    return row.type.desc;
-                },
-                formatDepartment(row, column){
-                    let departments=JSON.parse(row.department);
-                    let name='';
-                    departments.forEach((val,i)=>{
-                        for(let key in this.Department){
-                            if(this.Department[key].code==val){
-                                name+= this.Department[key].desc+' ';
-                                break;
-                            }
-                        }
-                    });
-                    return name;
-                },
-                formatTime(row, column) {
-                    return dateFormat(row[column.property])
-                },
-                showTag(id) {
-                    $("#" + id + 'edit').show();
-                    $("#" + id + 'cat').show();
-                },
-                hideTag(id) {
-                    $("#" + id + 'edit').hide();
-                    $("#" + id + 'cat').hide();
-                },
-                handleSelectionChange(val) {
-                    taskManageVm.multipleSelection = val;
-                    taskManageVm.delIds = [];
-
-                    for (let index in taskManageVm.multipleSelection) {
-                        taskManageVm.delIds.push(taskManageVm.multipleSelection[index].id)
-                    }
-                },
-                editData(id) {
-                    taskManageVm.editFlag = true;
-                    taskManageVm.catFlag = false;
-                    taskManageVm.getOneData(id);
-                },
-                colseAdd(formName) {
-                    taskManageVm.addVisible = false;
-                },
-                catData(id) {
-                    taskManageVm.editFlag = false;
-                    taskManageVm.catFlag = true;
-                    taskManageVm.getOneData(id);
-                },
-                editData(id) {
-                    taskManageVm.editFlag = true;
-                    taskManageVm.catFlag = false;
-                    taskManageVm.getOneData(id);
-                },
-                handleSizeChange(val) {
-                    taskManageVm.pageSize = val;
-                    taskManageVm.search();
-                },
-                handleCurrentChange(val) {
-                    taskManageVm.curPage = val;
-                    taskManageVm.search();
-                },
-                resetForm() {
-                    // taskManageVm.$refs[formName].resetFields();
-                    taskManageVm.dataForm = JSON.parse(JSON.stringify(taskManageVm.dataFormCopy));
-                    let name = '任务管理' + dateFormat(new Date());
-                    taskManageVm.dataForm.name = name;
-                    taskManageVm.dataForm.description = name;
-                },
-                addDataForm() {
-                    taskManageVm.resetForm();
-                    taskManageVm.addVisible = true;
-                    taskManageVm.editFlag = false;
-                    taskManageVm.catFlag = false;
-                },
-                getOneData(id) {
-                    ajax(basePath + "/taskManage/getOneTaskManage", 'get', {id: id}, function (res) {
-                        if (res.code == 1) {
-                            taskManageVm.dataForm = res.result;
-                            taskManageVm.dataForm.status=res.result.status.code;
-                            taskManageVm.dataForm.type=res.result.type.code;
-                            taskManageVm.dataForm.department = taskManageVm.dataForm.department ? JSON.parse(taskManageVm.dataForm.department) : [];
-                            taskManageVm.addVisible = true;
-                        } else {
-                            taskManageVm.$message({showClose: true, message: res.msg, type: 'error'});
-                        }
-                    });
-                },
-                search() {
-                    ajax(basePath + "/taskManage/findPageTaskManage", 'get', {
-                        name: taskManageVm.searchName,
-                        type: taskManageVm.searchType,
-                        status: taskManageVm.searchStatus,
-                        createTime: taskManageVm.searchTime.join(','),
-                        pageSize: taskManageVm.pageSize,
-                        curPage: taskManageVm.curPage
-                    }, function (res) {
-                        if (res.code == 1) {
-                            taskManageVm.dataList = res.result;
-                            taskManageVm.dataList.forEach(item => {
-                                // if (item.status === '0') {
-                                //   taskManageVm.$set(item, 'status', false)
-                                // } else if (item.status === '1') {
-                                //   taskManageVm.$set(item, 'status', true)
-                                // }
-                            });
-                            taskManageVm.totalSize = res.totalSize;
-                        } else {
-                            taskManageVm.$message({showClose: true, message: res.msg, type: 'error'});
-                        }
-                    });
-                },
-                deleteRow(index, row) {
-                    taskManageVm.delIds = [];
-                    taskManageVm.delIds.push(row.id);
-                    if (row.status == 'COMPLETE') {
-                        taskManageVm.$message({showClose: true, message: '状态为完成不可删除', type: 'error'});
+    let taskManageVm = new Vue({
+        el: '#taskManage',
+        data() {
+            let checkName = (rule, value, callback) => {
+                for (let i in taskManageVm.dataList) {
+                    if (taskManageVm.dataList[i].id != taskManageVm.dataForm.id && taskManageVm.dataList[i].name == taskManageVm.dataForm.name) {
+                        callback(new Error('任务名称不能重复'));
                         return;
                     }
-                    taskManageVm.deleteData();
-                },
-                deleteData() {
-                    if (taskManageVm.delIds.length > 0) {
-                        ajax(basePath + "/taskManage/deleteTaskManage", 'delete', {ids: taskManageVm.delIds.join(',')}, function (res) {
+                }
+                callback();
+            };
+            return {
+                pageSize: 10,
+                curPage: 1,
+                totalSize: 0,
+                dataForm: dataForm,
+                dataFormCopy: dataForm,//用于重置
+                dataList: [],
+                delVisible: false,
+                addVisible: false,
+                status: true,
+                editFlag: false,//修改标识
+                catFlag: false,//查看标识
+                TaskType: [],
+                TaskStatus: [],
+                Department: [],
+                searchName: '',
+                searchStatus: '',
+                searchType: '',
+                searchTime: [],
+                delIds: [],
+                deviceAll: [],
+                importUrl:basePath+'/taskManage/importTaskManage',
+                importVisible:false,
+                fileData:new FormData(),
+                fileList:[],
+                activeName: 'first',
+                rules: {
+                    name: [
+                        {required: true, message: '请输入任务名称', trigger: ['blur', 'change']},
+                        {min: 3, max: 50, message: '长度在 3 到 50 个字符', trigger: ['blur', 'change']},
+                        {validator: checkName, trigger: ['blur', 'change']}
+                    ],
+                    content: [
+                        {required: true, message: '请输入任务内容', trigger: 'blur'},
+                        {max: 200, message: '长度不能超过200字符', trigger: 'blur'}
+                    ],
+                    type: [
+                        {required: true, message: '请选择任务类型', trigger: 'blur'},
+                    ],
+                    deadline: [
+                        {required: true, message: '请选择截止日期', trigger: 'blur'},
+                    ],
+                    status: [
+                        {required: true, message: '请选择任务状态', trigger: 'blur',},
+                    ],
+                    department: [
+                        {required: true, message: '请选择执行部门', trigger: 'blur'},
+                    ]
+                }
+            }
+        },
+        mounted() {
+            this.$nextTick(() => {
+                taskManageVm.getEnums();
+                taskManageVm.loadCharts();
+            });
+        },
+        methods: {
+            getEnums(){
+                //获取后台枚举类型
+                ajax('getEnums','get',{enumNames:'TaskStatus,TaskType,Department'},function (res){
+                    if(res.code==1){
+                        taskManageVm.TaskStatus=res.result['TaskStatus'];
+                        taskManageVm.TaskType=res.result['TaskType'];
+                        taskManageVm.Department=res.result['Department'];
+                    }
+                    taskManageVm.search();
+                })
+            },
+            uploadFile(file) {
+                taskManageVm.fileData.append('files', file.file);  // append增加数据
+            },
+            submitUpload() {
+                taskManageVm.fileData=new FormData();
+                this.$refs.upload.submit();
+                $.ajax({
+                    url: basePath+'/taskManage/importTaskManage',
+                    type: 'POST',
+                    cache: false,
+                    data: taskManageVm.fileData,
+                    processData: false,
+                    contentType: false,
+                    success:function(res){
+                        if(res.code==1){
+                            taskManageVm.$message({showClose: true, message: '数据导入成功', type: 'success'});
+                        }else{
+                            taskManageVm.$message({showClose: true, message: res.msg, type: 'error'});
+                        }
+                    }
+             });
+            },
+            formatTaskStatus(row, column){
+                return row.status.desc;
+            },
+            formatTaskType(row, column){
+                return row.type.desc;
+            },
+            formatDepartment(row, column){
+                let departments=JSON.parse(row.department);
+                let name='';
+                departments.forEach((val,i)=>{
+                    for(let key in this.Department){
+                        if(this.Department[key].code==val){
+                            name+= this.Department[key].desc+' ';
+                            break;
+                        }
+                    }
+                });
+                return name;
+            },
+            formatTime(row, column) {
+                return dateFormat(row[column.property])
+            },
+            showTag(id) {
+                $("#" + id + 'edit').show();
+                $("#" + id + 'cat').show();
+            },
+            hideTag(id) {
+                $("#" + id + 'edit').hide();
+                $("#" + id + 'cat').hide();
+            },
+            handleSelectionChange(val) {
+                taskManageVm.multipleSelection = val;
+                taskManageVm.delIds = [];
+
+                for (let index in taskManageVm.multipleSelection) {
+                    taskManageVm.delIds.push(taskManageVm.multipleSelection[index].id)
+                }
+            },
+            editData(id) {
+                taskManageVm.editFlag = true;
+                taskManageVm.catFlag = false;
+                taskManageVm.getOneData(id);
+            },
+            colseAdd(formName) {
+                taskManageVm.addVisible = false;
+            },
+            catData(id) {
+                taskManageVm.editFlag = false;
+                taskManageVm.catFlag = true;
+                taskManageVm.getOneData(id);
+            },
+            editData(id) {
+                taskManageVm.editFlag = true;
+                taskManageVm.catFlag = false;
+                taskManageVm.getOneData(id);
+            },
+            handleSizeChange(val) {
+                taskManageVm.pageSize = val;
+                taskManageVm.search();
+            },
+            handleCurrentChange(val) {
+                taskManageVm.curPage = val;
+                taskManageVm.search();
+            },
+            resetForm() {
+                // taskManageVm.$refs[formName].resetFields();
+                taskManageVm.dataForm = JSON.parse(JSON.stringify(taskManageVm.dataFormCopy));
+                let name = '任务管理' + dateFormat(new Date());
+                taskManageVm.dataForm.name = name;
+                taskManageVm.dataForm.description = name;
+            },
+            addDataForm() {
+                taskManageVm.resetForm();
+                taskManageVm.addVisible = true;
+                taskManageVm.editFlag = false;
+                taskManageVm.catFlag = false;
+            },
+            getOneData(id) {
+                ajax(basePath + "/taskManage/getOneTaskManage", 'get', {id: id}, function (res) {
+                    if (res.code == 1) {
+                        taskManageVm.dataForm = res.result;
+                        taskManageVm.dataForm.status=res.result.status.code;
+                        taskManageVm.dataForm.type=res.result.type.code;
+                        taskManageVm.dataForm.department = taskManageVm.dataForm.department ? JSON.parse(taskManageVm.dataForm.department) : [];
+                        taskManageVm.addVisible = true;
+                    } else {
+                        taskManageVm.$message({showClose: true, message: res.msg, type: 'error'});
+                    }
+                });
+            },
+            search() {
+                ajax(basePath + "/taskManage/findPageTaskManage", 'get', {
+                    name: taskManageVm.searchName,
+                    type: taskManageVm.searchType,
+                    status: taskManageVm.searchStatus,
+                    createTime: taskManageVm.searchTime.join(','),
+                    pageSize: taskManageVm.pageSize,
+                    curPage: taskManageVm.curPage
+                }, function (res) {
+                    if (res.code == 1) {
+                        taskManageVm.dataList = res.result;
+                        taskManageVm.dataList.forEach(item => {
+                            // if (item.status === '0') {
+                            //   taskManageVm.$set(item, 'status', false)
+                            // } else if (item.status === '1') {
+                            //   taskManageVm.$set(item, 'status', true)
+                            // }
+                        });
+                        taskManageVm.totalSize = res.totalSize;
+                    } else {
+                        taskManageVm.$message({showClose: true, message: res.msg, type: 'error'});
+                    }
+                });
+            },
+            deleteRow(index, row) {
+                taskManageVm.delIds = [];
+                taskManageVm.delIds.push(row.id);
+                if (row.status == 'COMPLETE') {
+                    taskManageVm.$message({showClose: true, message: '状态为完成不可删除', type: 'error'});
+                    return;
+                }
+                taskManageVm.deleteData();
+            },
+            deleteData() {
+                if (taskManageVm.delIds.length > 0) {
+                    ajax(basePath + "/taskManage/deleteTaskManage", 'delete', {ids: taskManageVm.delIds.join(',')}, function (res) {
+                        if (res.code == 1) {
+                            taskManageVm.delVisible=false;
+                            taskManageVm.$message({showClose: true, message: res.msg, type: 'success'});
+                            taskManageVm.search();
+                        } else {
+                            taskManageVm.$message({showClose: true, message: res.msg, type: 'error'});
+                        }
+                    });
+                } else {
+                    taskManageVm.$message({showClose: true, message: '请选择至少选择一个删除', type: 'error'});
+                }
+            },
+            submitForm() {
+                taskManageVm.$refs.dataForm.validate((valid) => {
+                    if (valid) {
+                        let url = "/taskManage/updateTaskManageById";
+                        let method = 'put';
+                        if (!taskManageVm.editFlag) {
+                            url = "/taskManage/saveTaskManage";
+                            method = 'post';
+                        }
+
+                        ajax(basePath + url, method, {params: JSON.stringify(taskManageVm.dataForm)}, function (res) {
                             if (res.code == 1) {
-                                taskManageVm.delVisible=false;
-                                taskManageVm.$message({showClose: true, message: res.msg, type: 'success'});
                                 taskManageVm.search();
+                                taskManageVm.colseAdd();
                             } else {
                                 taskManageVm.$message({showClose: true, message: res.msg, type: 'error'});
                             }
                         });
-                    } else {
-                        taskManageVm.$message({showClose: true, message: '请选择至少选择一个删除', type: 'error'});
                     }
-                },
+                });
+            },
+            exportData(){
+                $("#name").val(taskManageVm.searchName);
+                $("#type").val(taskManageVm.searchType);
+                $("#status").val(taskManageVm.searchStatus);
+                $("#createTime").val(taskManageVm.searchTime.join(','));
 
-
-                submitForm() {
-                    taskManageVm.$refs.dataForm.validate((valid) => {
-                        if (valid) {
-                            let url = "/taskManage/updateTaskManageById";
-                            let method = 'put';
-                            if (!taskManageVm.editFlag) {
-                                url = "/taskManage/saveTaskManage";
-                                method = 'post';
-                            }
-
-                            ajax(basePath + url, method, {params: JSON.stringify(taskManageVm.dataForm)}, function (res) {
-                                if (res.code == 1) {
-                                    taskManageVm.search();
-                                    taskManageVm.colseAdd();
-                                } else {
-                                    taskManageVm.$message({showClose: true, message: res.msg, type: 'error'});
-                                }
-                            });
+                $('#exportForm').attr('action',basePath+'/taskManage/exportTaskManage');
+                $('#exportForm').submit();
+            },
+            loadCharts(){
+                ajax(basePath + '/taskManage/localECharts', 'post', {}, function (res) {
+                    if(res.code==1){
+                        let date=[],electric=[];
+                        for(let i=0;i<res.result.deadlines.length;i++){
+                            date.push(res.result.deadlines[i].deadline);
+                            electric.push(res.result.deadlines[i].sl)
                         }
-                    });
-                }
+
+                        let datePie=[],datePieName=[];
+                        for(let i=0;i<res.result.statuses.length;i++){
+                            datePieName.push(res.result.statuses[i].status);
+                            datePie.push({
+                                name:res.result.statuses[i].status,
+                                value:res.result.statuses[i].sl
+                            })
+                        }
+                        let optionBar = {
+                            xAxis: {
+                                type: 'category',
+                                data: date
+                            },
+                            tooltip: {
+                                trigger: 'axis'
+                            },
+                            yAxis: {
+                                type: 'value'
+                            },
+                            grid: {
+                                top:'5%',
+                                bottom:'10%'
+                            },
+                            series: [{
+                                data: electric,
+                                type: 'bar',
+                                smooth: true
+                            }]
+                        };
+                        let myChart = echarts.init(document.getElementById('dayData'),'walden');
+                        myChart.setOption(optionBar);
+
+                        let optionPie = {
+                            tooltip: {
+                                trigger: 'item',
+                                formatter: '{a} <br/>{b} : {c} ({d}%)'
+                            },
+                            legend: {
+                                orient: 'vertical',
+                                left: 'left',
+                                data:datePieName
+
+                            },
+                            series: [
+                                {
+                                    name: '上下班时间占能耗比',
+                                    type: 'pie',
+                                    radius: '55%',
+                                    center: ['50%', '60%'],
+                                    data: datePie,
+                                    emphasis: {
+                                        itemStyle: {
+                                            shadowBlur: 10,
+                                            shadowOffsetX: 0,
+                                            shadowColor: 'rgba(0,0,0,0.5)'
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                        let myChart1 = echarts.init(document.getElementById('rangeDate'))
+                        myChart1.setOption(optionPie)
+                    }
+
+                });
 
             }
-        });
+        }
+    });
     </script>
 </div>
 </html>
