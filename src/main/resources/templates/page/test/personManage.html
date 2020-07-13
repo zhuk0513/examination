@@ -2,20 +2,276 @@
       th:replace="common/layer(title='人员管理')">
 <div th:fragment="main_content">
     <div  id="personManage" v-cloak>
-        {{srcUrl}}
+        <el-tabs v-model="activeName" >
+            <el-tab-pane label="表格展示" name="first">
+
+                <el-row >
+                    <el-col :span="6">
+                        <span>姓名：</span>
+                        <el-input v-model="searchName" placeholder="姓名" clearable style="width: 300px"></el-input>
+                    </el-col>
+                    <el-col :span="6">
+                        <span>性别：</span>
+                        <el-select v-model=" searchSex" placeholder="性别" clearable>
+                            <el-option label="全部" value="" ></el-option>
+                            <el-option label="男" value="男" ></el-option>
+                            <el-option label="女" value="女" ></el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="6">
+                        <span>年级：</span>
+                        <el-select v-model=" searchGrade" placeholder="年级" clearable>
+                            < <el-option label="全部" value="" ></el-option>
+                            <el-option label="1" value="1" ></el-option>
+                            <el-option label="2" value="2" ></el-option>
+                            <el-option label="3" value="3" ></el-option>
+                            <el-option label="4" value="4" ></el-option>
+                            <el-option label="5" value="5" ></el-option>
+                            <el-option label="6" value="6" ></el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="6">
+                        <el-button @click="search">查询</el-button>
+                        <el-button @click="exportData()">导出</el-button>
+                    </el-col>
+                </el-row>
+                <template>
+                    <el-table
+                            ref="multipleTable1"
+                            :data="dataList"
+                            tooltip-effect="dark"
+                            style="width: 100%">
+                        <el-table-column
+                                type="selection"
+                                width="55">
+                        </el-table-column>
+                        <el-table-column
+                                prop="name"
+                                label="姓名">
+                        </el-table-column>
+                        <el-table-column
+                                prop="sex"
+                                label="性别">
+                        </el-table-column>
+                        <el-table-column
+                                prop="grade"
+                                label="年级"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                                prop="class"
+                                label="班级"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                                prop="date"
+                                label="出生年月"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                                prop="card"
+                                label="身份证号"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                                prop="address"
+                                label="家庭地址"
+                        >
+                        </el-table-column>
+                    </el-table>
+                </template>
+                <form id="exportForm" style="display:none;" action="" method="post" target="_self">
+                    <input type="text" id="name" name="name" />
+                    <input type="text" id="sex" name="sex" />
+                    <input type="text" id="grade" name="grade" />
+                </form>
+            </el-tab-pane>
+            <el-tab-pane label="图标展示" name="second">
+                <el-row>
+                    <el-col :span="12">
+                        <el-card  style="width:100%;height: 350px;">
+                            <div slot="header" class="clearfix">
+<!--                                <span>任务截止时间统计:</span>-->
+                                <span></span>
+                                <div id="dayData" style="height: 350px; width: 600px"></div>
+                            </div>
+                        </el-card>
+                    </el-col>
+
+                    <el-col :span="12">
+                        <el-card  style="width:100%;height: 350px;">
+                            <div slot="header" class="clearfix">
+<!--                                <span>任务状态统计:</span>-->
+                                <span></span>
+                                <div id="rangeDate" style="height: 350px; width: 600px"></div>
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+            </el-tab-pane>
+        </el-tabs>
+
     </div>
     <script th:inline="javascript">
         let personManageVm = new Vue({
             el: '#personManage',
             data: {
-                srcUrl: ''
+                dataList:[],
+                searchName:'',
+                searchSex:'',
+                searchGrade:'',
+                activeName:'first'
             },
             mounted() {
-                this.init();
+                this.$nextTick(() => {
+                    personManageVm.loadCharts();
+                    personManageVm.search();
+                });
             },
             methods: {
-                init() {
-                    this.srcUrl = "personManage.html";
+                search() {
+                    ajax(basePath+'/student/getAll','get',{name:personManageVm.searchName,sex:personManageVm.searchSex,grade:personManageVm.searchGrade},function(res){
+                        if(res.code==1){
+                            personManageVm.dataList=res.result;
+                        }
+                    });
+                },
+                loadCharts(){
+                    ajax(basePath+'/student/localECharts','get',{},function(res){
+                        if(res.code==1){
+                           console.log(res.result);
+                            let sexs=res.result.sex;
+                            let grades=res.result.grade;
+
+                            let mData=[],wData=[];
+                            for(let i=0;i<sexs.length;i++){
+                                if(sexs[i].sex=='男'){
+                                    mData.push(sexs[i].sl)
+                                }else if(sexs[i].sex=='女'){
+                                    wData.push(sexs[i].sl)
+                                }
+                            }
+                            let datePieName=[],datePie=[];
+                            for(let i=0;i<grades.length;i++){
+                                datePieName.push(grades[i].grade+"年级");
+                                datePie.push({name:grades[i].grade+"年级",value:grades[i].sl});
+                            }
+                            let optionBar = {
+                                title: {
+                                    text: '各年级男女生人数'
+                                },
+                                tooltip: {
+                                    trigger: 'axis'
+                                },
+                                legend: {
+                                    data: ['男', '女'],
+                                    color: function (params){
+                                        let colorList = ['#35d5ef','#fd50e0'];
+                                        return colorList[params.dataIndex];
+                                    }
+                                },
+                                calculable: true,
+                                xAxis: [
+                                    {
+                                        type: 'category',
+                                        data: ['一年级', '二年级', '三年级', '四年级', '五年级', '六年级']
+                                    }
+                                ],
+                                yAxis: [
+                                    {
+                                        type: 'value'
+                                    }
+                                ],
+                                series: [
+                                    {
+                                        name: '男',
+                                        type: 'bar',
+                                        data: mData,
+                                        itemStyle: {
+                                            normal: {
+                                        // 随机显示
+                                        //color:function(d){return “#”+Math.floor(Math.random()*(256*256*256-1)).toString(16);}
+                                        // 定制显示
+                                                color: function(params) {
+                                                    // var colorList = [‘#C33531’,’#EFE42A’,’#64BD3D’,’#EE9201’,’#29AAE3’, ‘#B74AE5’,’#0AAF9F’,’#E89589’,’#16A085’,’#4A235A’ ];
+                                                    // return colorList[params.dataIndex]
+                                                    return '#35d5ef';
+                                                }
+                                        //如果是两色交替 可以判断params.dataIndex的奇偶去设置颜色
+                                            }
+                                        },
+
+                                    },
+                                    {
+                                        name: '女',
+                                        type: 'bar',
+                                        data: wData,
+                                        itemStyle: {
+                                            normal: {
+                                                color: function(params) {
+                                                    return '#fd50e0';
+                                                }
+                                            }
+                                        },
+                                    }
+                                ]
+                            };
+                            let myChart = echarts.init(document.getElementById('dayData'));
+                            myChart.setOption(optionBar);
+
+                            let optionPie = {
+                                title: {
+                                    text: '各年级学生任务占比',
+                                    right:'20%'
+                                },
+                                tooltip: {
+                                    trigger: 'item',
+                                    formatter: '{a} <br/>{b} : {c} ({d}%)'
+                                },
+                                legend: {
+                                    orient: 'vertical',
+                                    left: 'left',
+                                    data:datePieName
+
+                                },
+                                series: [
+                                    {
+                                        name: '各年级学生人数占比',
+                                        type: 'pie',
+                                        radius: '55%',
+                                        center: ['50%', '60%'],
+                                        data: datePie,
+                                        itemStyle: {
+                                            normal: {
+                                                color: function(params) {
+                                                    let colorList = ['#fd50e0','#ca3bef','#5b3fca','#1374ec','#50c5fd','#35d5ef'];
+                                                    return colorList[params.dataIndex];
+                                                }
+                                            }
+                                        },
+                                        emphasis: {
+                                            itemStyle: {
+                                                shadowBlur: 10,
+                                                shadowOffsetX: 0,
+                                                shadowColor: 'rgba(0,0,0,0.5)'
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                            let myChart1 = echarts.init(document.getElementById('rangeDate'))
+                            myChart1.setOption(optionPie)
+
+                        }
+                    });
+                },
+                exportData(){
+                    $("#name").val(personManageVm.searchName);
+                    $("#sex").val(personManageVm.searchSex);
+                    $("#grade").val(personManageVm.searchGrade);
+
+                    $('#exportForm').attr('action',basePath+'/student/exportData');
+                    $('#exportForm').submit();
                 }
             }
         });
