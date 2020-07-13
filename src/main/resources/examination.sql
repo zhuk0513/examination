@@ -58,5 +58,20 @@ INSERT INTO `task_manage` VALUES ('1275359906468040706', '任务管理2020-06-23
 INSERT INTO `task_manage` VALUES ('1275360008507068418', '任务管理2020-06-23 17:28:06', 'yyyy', 'PERSONAL', '2020-05-31 00:00:00', 'HANDLING', '[\"AFTER_SALE_SERVICE\"]', '2020-06-23 17:28:16');
 INSERT INTO `task_manage` VALUES ('1275360056129196033', '任务管理2020-06-23 17:28:17', 'yyy', 'PROJECT', '2020-06-01 00:00:00', 'NOT_HANDLE', '[\"TEST\"]', '2020-06-23 17:28:27');
 
+-- ----------------------------
+-- Table structure for student
+-- ----------------------------
+DROP TABLE IF EXISTS `student`;
+CREATE TABLE `student`  (
+  `id` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `name` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '姓名',
+  `sex` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '性别',
+  `grade` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '年级',
+  `class` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '班级',
+  `date` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '出生年月',
+  `card` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '身份证号',
+  `address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '家庭地址',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
